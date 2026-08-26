@@ -216,3 +216,23 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dataset
+data/raw/
+data/processed/
+*.zip
+
+# Model weights
+*.pt
+*.pth
+*.onnx
+
+# Experiment outputs
+runs/
+outputs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.env
