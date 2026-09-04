@@ -1,8 +1,8 @@
 import streamlit as st
-from ultralytics.models.yolo.model import YOLO
 from PIL import Image
 import numpy as np
-
+from pathlib import Path
+from ultralytics import YOLO
 
 # =========================
 # Page Configuration
@@ -109,21 +109,21 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
 
-    image = Image.open(uploaded_file)
-
+    image = Image.open(uploaded_file).convert("RGB")
     image_array = np.array(image)
 
-    # Load YOLO model
-    model = YOLO("yolov8n.pt")
+    # Load trained road-damage YOLO model
+    BASE_DIR = Path(__file__).resolve().parents[1]
+    MODEL_PATH = BASE_DIR / "reports" / "baseline" / "weights" / "best.pt"
+
+    model = YOLO(str(MODEL_PATH))
 
     # Analyze automatically
     with st.spinner("Analyzing image..."):
-
-        results = model(image_array)
+        results = model(image_array, conf=0.26)
 
     # Create detection image
     result_image = results[0].plot()
-
 
     # =========================
     # Detection Result
