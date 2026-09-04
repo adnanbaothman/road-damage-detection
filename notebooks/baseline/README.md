@@ -17,7 +17,6 @@ Processed dataset:
 data/processed/README.md
 
 Baseline results and model weights:
-eports/baseline/
 
-Full baseline archive:
-[yolo11s_baseline_complete.zip](PASTE_BASELINE_ZIP_GOOGLE_DRIVE_LINK_HERE)
+eports/baseline/
+
