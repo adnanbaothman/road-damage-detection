@@ -1,0 +1,17 @@
+# Baseline Visual Error Analysis
+
+## Validation Batch 0
+
+| Example | Ground Truth | Prediction | Error Type | Possible Cause |
+|---|---|---|---|---|
+| 1 | D40 | No detection | False Negative | Pothole appears small / low contrast |
+| 2 | D20 | D20 | Correct | Clearly visible damage |
+| 3 | None | D00 | False Positive | Road texture resembles crack |
+
+## Validation Batch 1
+
+To be analyzed.
+
+## Validation Batch 2
+
+To be analyzed.
