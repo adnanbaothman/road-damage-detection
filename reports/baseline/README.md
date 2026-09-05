@@ -144,3 +144,12 @@ For reproducibility, future experiments should clearly record:
 - and the exact change made relative to `BASE-01`.
 
 This ensures that every improvement can be compared fairly against the original baseline.
+
+## Full Baseline Training Run
+
+The complete YOLO11s baseline training output can be downloaded here:
+
+[yolo11s_baseline_complete.zip](https://drive.google.com/file/d/1HRDNVmahasRt2y3ZZUsXX6ZB9SSk9rqS/view?usp=sharing)
+
+This archive contains the full saved baseline run, including model weights and training outputs.
+
