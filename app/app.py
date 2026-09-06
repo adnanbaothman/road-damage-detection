@@ -114,7 +114,7 @@ if uploaded_file is not None:
     image_array = np.array(image)
 
     # Load YOLO model
-    model = YOLO("yolov8n.pt")
+    model = YOLO(r"reports\baseline\weights\best.pt")
 
     # Analyze automatically
     with st.spinner("Analyzing image..."):
