@@ -1,7 +1,12 @@
 import streamlit as st
-from ultralytics.models.yolo.model import YOLO
+from ultralytics import YOLO
 from PIL import Image
 import numpy as np
+from pathlib import Path
+
+@st.cache_resource
+def load_model(model_path):
+    return YOLO(model_path)
 
 
 # =========================
@@ -113,8 +118,8 @@ if uploaded_file is not None:
 
     image_array = np.array(image)
 
-    # Load YOLO model
-    model = YOLO(r"reports\baseline\weights\best.pt")
+    model_path = Path(__file__).resolve().parent.parent / "reports" / "baseline" / "weights" / "best.pt"
+    model = load_model(model_path)
 
     # Analyze automatically
     with st.spinner("Analyzing image..."):
