@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 from ultralytics import YOLO
 
+
 # =========================
 # Page Configuration
 # =========================
@@ -16,56 +17,79 @@ st.set_page_config(
 
 
 # =========================
+# Load Model
+# =========================
+
+@st.cache_resource
+def load_model(model_path):
+    """
+    Load the trained RoadGuard YOLO model once and cache it.
+    This prevents Streamlit from reloading the model
+    every time the application reruns.
+    """
+    return YOLO(str(model_path))
+
+
+# =========================
 # Custom CSS
 # =========================
 
-st.markdown("""
-<style>
+st.markdown(
+    """
+    <style>
 
-    .main-title {
-        text-align: center;
-        font-size: 42px;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
+        .main-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
 
-    .subtitle {
-        text-align: center;
-        color: #6b7280;
-        font-size: 17px;
-        margin-bottom: 35px;
-    }
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            font-size: 17px;
+            margin-bottom: 35px;
+        }
 
-    .upload-title {
-        font-size: 22px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
+        .upload-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 
-    .result-title {
-        font-size: 22px;
-        font-weight: 600;
-        margin-top: 30px;
-        margin-bottom: 15px;
-    }
+        .result-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
 
-    .result-card {
-        padding: 15px 20px;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        margin-bottom: 10px;
-        background-color: #f9fafb;
-    }
+        .result-card {
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(128, 128, 128, 0.35);
+            margin-bottom: 10px;
 
-    .footer {
-        text-align: center;
-        color: #9ca3af;
-        font-size: 13px;
-        margin-top: 45px;
-    }
+            /*
+            Use Streamlit theme colors so the result card
+            works correctly in both Light Mode and Dark Mode.
+            */
+            background-color: var(--secondary-background-color);
+            color: var(--text-color);
+        }
 
-</style>
-""", unsafe_allow_html=True)
+        .footer {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 13px;
+            margin-top: 45px;
+        }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # =========================
@@ -92,6 +116,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
+# Used to reset the uploader when Delete Image is pressed
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = 0
 
@@ -109,21 +135,53 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
 
+    # Convert uploaded image to standard RGB format
     image = Image.open(uploaded_file).convert("RGB")
+
+    # Convert image into NumPy array for YOLO
     image_array = np.array(image)
 
-    # Load trained road-damage YOLO model
-    BASE_DIR = Path(__file__).resolve().parents[1]
-    MODEL_PATH = BASE_DIR / "reports" / "baseline" / "weights" / "best.pt"
 
-    model = YOLO(str(MODEL_PATH))
+    # =========================
+    # Load Trained Model
+    # =========================
 
-    # Analyze automatically
+    model_path = (
+        Path(__file__).resolve().parents[1]
+        / "reports"
+        / "baseline"
+        / "weights"
+        / "best.pt"
+    )
+
+    # Check that the trained model exists
+    if not model_path.exists():
+        st.error(
+            f"RoadGuard model not found:\n{model_path}"
+        )
+        st.stop()
+
+    model = load_model(model_path)
+
+
+    # =========================
+    # Run Detection
+    # =========================
+
     with st.spinner("Analyzing image..."):
-        results = model(image_array, conf=0.26)
 
-    # Create detection image
+        results = model(
+            image_array,
+            conf=0.26
+        )
+
+
+    # =========================
+    # Create Detection Image
+    # =========================
+
     result_image = results[0].plot()
+
 
     # =========================
     # Detection Result
@@ -146,6 +204,7 @@ if uploaded_file is not None:
 
     boxes = results[0].boxes
 
+
     if boxes is not None and len(boxes) > 0:
 
         st.markdown(
@@ -153,27 +212,37 @@ if uploaded_file is not None:
             unsafe_allow_html=True
         )
 
-        for box in boxes:
+
+        # Display every detection returned by YOLO
+        for detection_number, box in enumerate(boxes, start=1):
 
             class_id = int(box.cls[0])
             confidence = float(box.conf[0])
 
             class_name = model.names[class_id]
 
+
             st.markdown(
                 f"""
                 <div class="result-card">
-                    <strong>{class_name.title()}</strong>
+
+                    <strong>
+                        Detection {detection_number}: {class_name}
+                    </strong>
+
                     <br>
+
                     Confidence: {confidence * 100:.1f}%
+
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
+
     else:
 
-        st.info("No objects detected.")
+        st.info("No road damage detected.")
 
 
     # =========================
@@ -185,6 +254,7 @@ if uploaded_file is not None:
     if st.button("🗑️ Delete Image"):
 
         st.session_state.uploader_key += 1
+
         st.rerun()
 
 
@@ -193,6 +263,8 @@ if uploaded_file is not None:
 # =========================
 
 st.markdown(
-    '<div class="footer">RoadGuard AI • Road Damage Detection Prototype</div>',
+    '<div class="footer">'
+    'RoadGuard AI • Road Damage Detection Prototype'
+    '</div>',
     unsafe_allow_html=True
 )
