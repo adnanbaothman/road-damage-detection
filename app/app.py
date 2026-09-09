@@ -141,27 +141,26 @@ if uploaded_file is not None:
     # Convert image into NumPy array for YOLO
     image_array = np.array(image)
 
-
     # =========================
-    # Load Trained Model
+    # Load Improved Trained Model
     # =========================
 
     model_path = (
-        Path(__file__).resolve().parents[1]
+        Path(__file__).resolve().parent.parent
         / "reports"
-        / "baseline"
+        / "improved"
         / "weights"
-        / "best.pt"
+        / "roadguard_best.pt"
     )
 
-    # Check that the trained model exists
+    # Check that the improved model exists
     if not model_path.exists():
-        st.error(
-            f"RoadGuard model not found:\n{model_path}"
-        )
+        st.error(f"RoadGuard improved model not found:\n{model_path}")
         st.stop()
 
     model = load_model(model_path)
+
+
 
 
     # =========================
@@ -169,7 +168,6 @@ if uploaded_file is not None:
     # =========================
 
     with st.spinner("Analyzing image..."):
-
         results = model(
             image_array,
             conf=0.26
@@ -187,10 +185,7 @@ if uploaded_file is not None:
     # Detection Result
     # =========================
 
-    st.markdown(
-        '<div class="result-title">🔍 Detection Result</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("### 🔍 Detection Result")
 
     st.image(
         result_image,
@@ -204,16 +199,10 @@ if uploaded_file is not None:
 
     boxes = results[0].boxes
 
-
     if boxes is not None and len(boxes) > 0:
 
-        st.markdown(
-            '<div class="result-title">📊 Detected Objects</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown("### 📊 Detected Objects")
 
-
-        # Display every detection returned by YOLO
         for detection_number, box in enumerate(boxes, start=1):
 
             class_id = int(box.cls[0])
@@ -221,27 +210,17 @@ if uploaded_file is not None:
 
             class_name = model.names[class_id]
 
+            with st.container(border=True):
 
-            st.markdown(
-                f"""
-                <div class="result-card">
+                st.markdown(
+                    f"**Detection {detection_number}: {class_name}**"
+                )
 
-                    <strong>
-                        Detection {detection_number}: {class_name}
-                    </strong>
-
-                    <br>
-
-                    Confidence: {confidence * 100:.1f}%
-
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
+                st.write(
+                    f"Confidence: {confidence * 100:.1f}%"
+                )
 
     else:
-
         st.info("No road damage detected.")
 
 
@@ -254,17 +233,17 @@ if uploaded_file is not None:
     if st.button("🗑️ Delete Image"):
 
         st.session_state.uploader_key += 1
-
         st.rerun()
-
 
 # =========================
 # Footer
 # =========================
 
 st.markdown(
-    '<div class="footer">'
-    'RoadGuard AI • Road Damage Detection Prototype'
-    '</div>',
+    """
+    <div class="footer">
+        RoadGuard AI • Road Damage Detection Prototype
+    </div>
+    """,
     unsafe_allow_html=True
 )
