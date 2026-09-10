@@ -1,0 +1,2 @@
+Model,Model Size MB,Parameters,GFLOPs,Image Size,Device,Ultralytics Test Inference ms/image,Independent Mean Latency ms/image,Independent Median Latency ms/image,Latency Std ms,Approx FPS
+RoadGuard Final YOLO11s,18.29,9429340,21.4,640,Tesla T4,9.5,12.71,12.56,1.01,78.7

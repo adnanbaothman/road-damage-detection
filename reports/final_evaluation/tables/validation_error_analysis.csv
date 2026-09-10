@@ -1,0 +1,9 @@
+Model,Class,TP,FP,FN,Misclassification
+Baseline,D00,1299,682,1235,26
+Baseline,D10,621,315,546,15
+Baseline,D20,660,226,380,21
+Baseline,D40,261,98,375,6
+Improved,D00,1293,629,1246,21
+Improved,D10,605,297,560,17
+Improved,D20,660,240,372,29
+Improved,D40,309,184,327,6

@@ -1,0 +1,2 @@
+Saudi Images Evaluated,Images With RoadGuard Prediction,Images With No Prediction,Prediction Presence Rate (%),No Prediction Rate (%),Images Containing D00 Prediction,Images Containing D10 Prediction,Images Containing D20 Prediction,Images Containing D40 Prediction,Confidence Threshold
+4923,894,4029,18.16,81.84,147,50,123,649,0.26

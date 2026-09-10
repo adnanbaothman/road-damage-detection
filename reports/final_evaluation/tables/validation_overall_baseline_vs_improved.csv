@@ -1,0 +1,3 @@
+Model,Precision,Recall,mAP50,mAP50-95
+Baseline,0.668,0.548,0.603,0.317
+Improved D40 Oversampling,0.6639095849,0.5523327957,0.6083924743,0.3217212405

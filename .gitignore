@@ -236,3 +236,27 @@ outputs/
 
 # Environment
 .env
+
+# Generated / local data
+*.zip
+*.tar
+*.tar.gz
+__pycache__/
+*.pyc
+.DS_Store
+
+# Raw datasets
+data/raw/
+datasets/
+rdd2022_yolo/
+Saudi_Road_Dataset/
+
+# Training artifacts
+runs/
+wandb/
+*.cache
+
+# Large Saudi prediction galleries
+saudi_all_predictions/
+saudi_predictions_sorted/
+saudi_predictions_with_boxes/
