@@ -53,3 +53,16 @@ Then open the local URL shown in the terminal, upload a JPG, JPEG, or PNG road i
 ## Model Results
 
 The baseline model achieved approximately 0.603 mAP@0.5 on the validation set. Performance is not identical across classes: D20 performs best, while D40 has lower recall and may miss potholes.
+
+## Saudi External-Domain Evaluation
+
+The final RoadGuard model was also tested on unseen Saudi road imagery as an external-domain evaluation.
+
+- Saudi pothole-positive images evaluated: 4,923
+- Images with at least one RoadGuard prediction: 894
+- Prediction presence rate at confidence 0.26: 18.16%
+- The Saudi dataset was not used for model training.
+- Because its annotation scheme differs from RDD2022, this result is reported as prediction presence rather than directly comparable mAP or accuracy.
+
+Full Saudi evaluation files:
+reports/saudi_evaluation/
