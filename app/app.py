@@ -1,5 +1,5 @@
 import streamlit as st
-from PIL import Image
+from PIL import Image, ImageOps
 import numpy as np
 from pathlib import Path
 from ultralytics import YOLO
@@ -136,7 +136,9 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
 
     # Convert uploaded image to standard RGB format
-    image = Image.open(uploaded_file).convert("RGB")
+    image = Image.open(uploaded_file)
+    image = ImageOps.exif_transpose(image)
+    image = image.convert("RGB")
 
     # Convert image into NumPy array for YOLO
     image_array = np.array(image)
@@ -169,10 +171,10 @@ if uploaded_file is not None:
 
     with st.spinner("Analyzing image..."):
         results = model(
-            image_array,
-            conf=0.26
-        )
-
+        image_array,
+        conf=0.26,
+        imgsz=640
+)
 
     # =========================
     # Create Detection Image
