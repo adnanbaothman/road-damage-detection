@@ -107,6 +107,13 @@ uploaded_file = st.file_uploader(
     key=f"road_image_{st.session_state.uploader_key}"
 )
 
+confidence_threshold = st.slider(
+    "Confidence Threshold",
+    min_value=0.10,
+    max_value=0.90,
+    value=0.26,
+    step=0.01
+)
 
 # =========================
 # Image Analysis
@@ -124,7 +131,10 @@ if uploaded_file is not None:
     # Analyze automatically
     with st.spinner("Analyzing image..."):
 
-        results = model(image_array)
+        results = model(
+            image_array,
+            conf=confidence_threshold
+        )
 
     # Create detection image
     result_image = results[0].plot()
