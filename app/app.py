@@ -126,6 +126,7 @@ model_paths = {
 }
 
 st.caption("Both models use the same confidence threshold.")
+st.caption("Detection counts and mean confidence are not measures of accuracy.")
 
 
 def show_prediction(model_name, image, threshold):
@@ -149,8 +150,34 @@ def show_prediction(model_name, image, threshold):
     result_image = np.ascontiguousarray(result.plot()[:, :, ::-1])
     st.image(result_image, use_container_width=True)
 
+    # Detection Summary
     boxes = result.boxes
-    st.markdown("**Detected Objects**")
+    total_detections = len(boxes) if boxes is not None else 0
+    class_counts = {}
+    total_confidence = 0.0
+
+    if total_detections > 0:
+        for box in boxes:
+            class_id = int(box.cls[0])
+            class_name = model.names[class_id]
+            class_counts[class_name] = class_counts.get(class_name, 0) + 1
+            total_confidence += float(box.conf[0])
+
+    count_column, confidence_column = st.columns(2)
+    count_column.metric("Detected Objects", total_detections)
+    average_confidence = (
+        f"{total_confidence / total_detections * 100:.1f}%"
+        if total_detections > 0 else "N/A"
+    )
+    confidence_column.metric("Mean Confidence", average_confidence)
+
+    if class_counts:
+        st.caption(" | ".join(
+            f"{class_name.title()}: {count}"
+            for class_name, count in sorted(class_counts.items())
+        ))
+
+    st.markdown("**Detection Details**")
 
     if boxes is None or len(boxes) == 0:
         st.info("No objects detected.")
