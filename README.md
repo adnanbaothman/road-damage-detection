@@ -1,10 +1,19 @@
-# Road Damage Detection
+<img width="932" height="1030" alt="image" src="https://github.com/user-attachments/assets/2ba131f2-12ab-44e0-a142-9a8b2cc88de7" />
+# RoadGuard AI – Road Damage Detection
 
-AI-based road damage detection using deep learning and the RDD2022 dataset.
+AI-powered road damage detection using YOLO11s and the RDD2022 dataset.
+
+Developed as a team capstone project during Samsung Innovation Campus 2026, in partnership with Misk.
+
+## Live Demo
+
+[Try RoadGuard AI](https://roadguard-ai-ksa.streamlit.app/)
+
+The application compares the baseline and improved models side by side using the same uploaded image and confidence threshold.
 
 ## What This Project Does
 
-The project uses a YOLO object-detection model to find four types of road damage:
+The project detects four types of road damage:
 
 | Class | Meaning |
 | --- | --- |
@@ -13,19 +22,59 @@ The project uses a YOLO object-detection model to find four types of road damage
 | D20 | Alligator crack |
 | D40 | Pothole |
 
-The trained model looks at an uploaded road image, predicts damage locations, and draws a box around each prediction.
+The application provides:
+
+- Side-by-side model comparison.
+- Adjustable confidence threshold.
+- Bounding boxes and damage classifications.
+- Detection counts and class summaries.
+- Individual and mean confidence scores.
+
+## Dataset
+
+The project uses the RDD2022 dataset, which contains road images collected from six countries.
+
+After data preparation, 38,385 images were used:
+
+| Split | Images |
+| --- | ---: |
+| Training | 30,707 |
+| Validation | 3,833 |
+| Testing | 3,845 |
+
+The improved model uses D40-focused oversampling to improve pothole detection while keeping the validation and test sets unchanged.
+
+## Technology Stack
+
+- Python
+- PyTorch
+- Ultralytics YOLO11s
+- OpenCV
+- NumPy
+- Pandas
+- Matplotlib
+- Pillow
+- Streamlit
+- Google Colab
+- Kaggle
+- Git and GitHub
 
 ## Main Folders
 
-- `app/` contains the Streamlit application.
-- `reports/baseline/weights/best.pt` is the trained model used by the app.
-- `reports/baseline/` contains training results and evaluation images.
-- `notebooks/` contains the Colab and Kaggle training notebooks.
-- `data/` contains dataset documentation and exploratory analysis files. The full dataset is not stored in this repository because it is large.
+- `app/` - Streamlit application.
+- `data/` - Dataset documentation and exploratory data analysis.
+- `notebooks/` - Data preparation, training and evaluation notebooks.
+- `reports/baseline/` - Baseline model and training results.
+- `reports/improved/` - Improved model and training results.
+- `reports/final_evaluation/` - Final model evaluation and comparison.
+- `reports/saudi_evaluation/` - Saudi external-domain evaluation.
+- `research-and-development/` - Research and development experiments.
+
+The full dataset is not included in the repository due to its size.
 
 ## Setup
 
-Create and activate a virtual environment, then install the project dependencies:
+Create a virtual environment and install the required dependencies:
 
 ```powershell
 python -m venv .venv
@@ -33,36 +82,81 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-The dependency file contains the libraries used by the application:
-
-- `streamlit` creates the browser-based user interface.
-- `ultralytics` loads and runs the YOLO model.
-- `Pillow` reads uploaded image files.
-- `numpy` converts images into arrays that the model can process.
+Python 3.12 is recommended.
 
 ## Run the Application
 
-Run this command from the repository root:
+From the repository root, run:
 
 ```powershell
 streamlit run app/app.py
 ```
 
-Then open the local URL shown in the terminal, upload a JPG, JPEG, or PNG road image, and review the predicted damage boxes and confidence scores.
+Open the local URL displayed in the terminal, upload a road image, and compare the predictions from both models.
+
+Alternatively, use the hosted application:
+
+https://roadguard-ai-ksa.streamlit.app/
 
 ## Model Results
 
-The baseline model achieved approximately 0.603 mAP@0.5 on the validation set. Performance is not identical across classes: D20 performs best, while D40 has lower recall and may miss potholes.
+### Validation Results
+
+| Metric | Baseline | Improved |
+| --- | ---: | ---: |
+| Precision | 66.8% | 66.4% |
+| Recall | 54.8% | 55.2% |
+| mAP@50 | 60.3% | 60.8% |
+| mAP@50:95 | 31.7% | 32.2% |
+| D40 Recall | 43.9% | 49.1% |
+
+### Pothole Error Analysis
+
+| Metric | Baseline | Improved |
+| --- | ---: | ---: |
+| True Positives | 261 | 309 |
+| False Positives | 98 | 184 |
+| False Negatives | 375 | 327 |
+
+Evaluation settings:
+
+- Confidence threshold: 0.26
+- Matching IoU threshold: 0.50
+
+The improved model detected 48 additional true pothole instances and reduced missed detections by 48, with an increase in false positives.
+
+### Held-Out Test Results
+
+The improved model was evaluated on 3,845 held-out RDD2022 images.
+
+| Metric | Result |
+| --- | ---: |
+| Precision | 64.8% |
+| Recall | 54.2% |
+| mAP@50 | 59.3% |
+| mAP@50:95 | 30.5% |
+
+[Full Evaluation Report](reports/final_evaluation/README.md)
 
 ## Saudi External-Domain Evaluation
 
-The final RoadGuard model was also tested on unseen Saudi road imagery as an external-domain evaluation.
+The improved model was also evaluated on Saudi road images that were not used during training.
 
 - Saudi pothole-positive images evaluated: 4,923
-- Images with at least one RoadGuard prediction: 894
-- Prediction presence rate at confidence 0.26: 18.16%
-- The Saudi dataset was not used for model training.
-- Because its annotation scheme differs from RDD2022, this result is reported as prediction presence rather than directly comparable mAP or accuracy.
+- Images with at least one prediction: 894
+- Images without predictions: 4,029
+- Prediction presence rate: 18.16%
+- Confidence threshold: 0.26
 
-Full Saudi evaluation files:
-reports/saudi_evaluation/
+Due to differences in annotation schemes and class definitions, these results represent prediction presence rather than directly comparable accuracy or mAP.
+
+[Saudi Evaluation Files](reports/saudi_evaluation/)
+
+## Limitations and Future Work
+
+- Improve generalization to Saudi road conditions.
+- Reduce false positives and missed detections.
+- Collect locally annotated road images.
+- Explore further improvements in class balance and model performance.
+
+RoadGuard AI is a computer vision prototype developed for learning, experimentation and demonstration.
