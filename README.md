@@ -1,4 +1,3 @@
-<img width="932" height="1030" alt="image" src="https://github.com/user-attachments/assets/2ba131f2-12ab-44e0-a142-9a8b2cc88de7" />
 # RoadGuard AI – Road Damage Detection
 
 AI-powered road damage detection using YOLO11s and the RDD2022 dataset.
