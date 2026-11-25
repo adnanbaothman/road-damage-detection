@@ -1,7 +1,3 @@
-## Project Overview
-
-![RoadGuard AI Project Poster](docs/roadguard_poster.png)
-
 # RoadGuard AI – Road Damage Detection
 
 AI-powered road damage detection using YOLO11s and the RDD2022 dataset.
@@ -13,6 +9,10 @@ Developed as a team capstone project during Samsung Innovation Campus 2026, in p
 [Try RoadGuard AI](https://roadguard-ai-ksa.streamlit.app/)
 
 The application compares the baseline and improved models side by side using the same uploaded image and confidence threshold.
+
+## Project Overview
+
+![RoadGuard AI Project Poster](docs/roadguard_poster.png)
 
 ## What This Project Does
 
